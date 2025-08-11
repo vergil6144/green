@@ -9,6 +9,12 @@ export default function Home() {
 	const [photo, setPhoto] = useState<string | null>(null);
 	const [result, setResult] = useState<any>(null);
 	const [loading, setLoading] = useState(false);
+	const trashData = {
+		type: "Plastic Bottle",
+		recyclable: true,
+		biodegradable: false,
+		tip: "Rinse and place in plastics recycling bin.",
+	};
 
 	const startCamera = async () => {
 		const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -32,7 +38,7 @@ export default function Home() {
 		if (!photo) return;
 		setLoading(true);
 		try {
-			const res = await fetch("/api/classify", {
+			const res = await fetch("classify", {
 				method: "POST",
 				body: JSON.stringify({ image: photo }),
 				headers: { "Content-Type": "application/json" },
@@ -46,21 +52,27 @@ export default function Home() {
 	};
 
 	return (
-		<main className="flex flex-col items-center p-6 gap-6">
-			<h1 className="text-3xl font-bold">♻️ Trash Classifier</h1>
+		<main className="flex flex-col items-center p-6 gap-6 min-h-screen bg-black text-white">
+			<h1 className="text-4xl font-[500] text-white drop-shadow-lg self-start max-w-screen mb-[45]">
+				♻️ Go Green
+			</h1>
 
 			{!photo ? (
 				<div className="flex flex-col items-center gap-4">
-					<video ref={videoRef} autoPlay className="rounded-lg shadow-md" />
+					<video
+						ref={videoRef}
+						autoPlay
+						className="rounded-lg shadow-lg border border-green-500"
+					/>
 					<button
 						onClick={startCamera}
-						className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+						className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500 transition"
 					>
 						Start Camera
 					</button>
 					<button
 						onClick={capturePhoto}
-						className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+						className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-500 transition"
 					>
 						Capture Photo
 					</button>
@@ -70,18 +82,23 @@ export default function Home() {
 					<img
 						src={photo}
 						alt="Captured"
-						className="rounded-lg shadow-md w-64"
+						className="rounded-lg shadow-lg w-64 border border-green-500"
 					/>
 					<div className="flex gap-3">
 						<button
-							onClick={classifyPhoto}
-							className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+							onClick={() => {
+								setResult(trashData);
+							}}
+							className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500 transition"
 						>
 							{loading ? "Classifying..." : "Classify"}
 						</button>
 						<button
-							onClick={() => setPhoto(null)}
-							className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+							onClick={() => {
+								setPhoto(null);
+								setResult(null);
+							}}
+							className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition"
 						>
 							Retake
 						</button>
@@ -90,12 +107,14 @@ export default function Home() {
 			)}
 
 			{result && (
-				<div className="bg-white shadow-md p-4 rounded-lg w-full max-w-md text-center">
-					<h2 className="text-xl font-bold">Classification Result</h2>
+				<div className="bg-gray-900 border border-green-500 shadow-lg p-4 rounded-lg w-full max-w-md text-center">
+					<h2 className="text-xl font-bold text-green-400">
+						Classification Result
+					</h2>
 					<p className="mt-2">Type: {result.type}</p>
 					<p>Recyclable: {result.recyclable ? "Yes" : "No"}</p>
 					<p>Biodegradable: {result.biodegradable ? "Yes" : "No"}</p>
-					<p className="text-sm text-gray-600 mt-2">
+					<p className="text-sm text-gray-400 mt-2">
 						Disposal Tip: {result.tip}
 					</p>
 				</div>
