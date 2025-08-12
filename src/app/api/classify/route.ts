@@ -1,16 +1,12 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import * as fs from "node:fs";
-
 export async function POST(req: Request) {
-	const ai = new GoogleGenAI({});
+const ai = new GoogleGenAI({ apiKey: "AIzaSyASUiMPmUBDhilOTS1oNVyODASJo7Wkskg" });
 
-	const base64ImageFile = fs.readFileSync(
-		"C:/Users/Aditya/Desktop/green/public/song1.jpg",
-		{
-			encoding: "base64",
-		},
-	);
+	const base64ImageFile = fs.readFileSync("/Users/Aditya/Desktop/green/public/song1.jpg", {
+		encoding: "base64",
+	});
 
 	const contents = [
 		{
@@ -31,13 +27,5 @@ export async function POST(req: Request) {
 
 	const { image } = await req.json();
 
-	// Mock trash classification
-	const trashData = {
-		type: "Plastic Bottle",
-		recyclable: true,
-		biodegradable: false,
-		tip: "Rinse and place in plastics recycling bin.",
-	};
-
-	return NextResponse.json(trashData);
+	return NextResponse.json(response.text);
 }
