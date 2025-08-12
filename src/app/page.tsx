@@ -21,7 +21,7 @@ export default function Home() {
 
 			if (!res.ok) throw new Error("Request failed");
 
-			const data = await res.text(); // Use res.json() if API returns JSON
+			const data = await res.json(); // Use res.json() if API returns JSON
 			console.log("Server response:", data);
 			setResult(data); // ✅ store actual data in state
 		} catch (err) {
@@ -108,7 +108,12 @@ export default function Home() {
 					<h2 className="text-xl font-bold text-green-400">
 						Classification Result
 					</h2>
-					<p>{result}</p>
+					<div>
+						<p>Type: {result.type}</p>
+						<p>Biodegradable: {result.biodegradable ? "Yes" : "No"}</p>
+						<p>Recyclable: {result.recyclable ? "Yes" : "No"}</p>
+						<p>Tip: {result.tip}</p>
+					</div>{" "}
 				</div>
 			)}
 

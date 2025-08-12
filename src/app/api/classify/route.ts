@@ -27,12 +27,13 @@ const ai = new GoogleGenAI({ apiKey: "AIzaSyASUiMPmUBDhilOTS1oNVyODASJo7Wkskg" }
 	});
 
 	console.log(response.text);
-
+	const thing2 = response.text.replace(/^```json\s*/, "").replace(/```[\s\S]*$/, "")
+	console.log(thing2)
 	// const { image } = await req.json();
 	// console.log('RAAAAAAA',image.slice(0,50))
 
 	// return NextResponse.json(response.text);
-return new NextResponse(response.text, {
+return new NextResponse(thing2, {
   status: 200,
   headers: { "Content-Type": "text/plain" }
 });}
