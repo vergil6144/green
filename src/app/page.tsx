@@ -1,14 +1,16 @@
 // app/page.tsx
+/** biome-ignore-all lint/a11y/useButtonType: <explanation> */
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function Home() {
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [photo, setPhoto] = useState<string | null>(null);
-	const [result, setResult] = useState<string | null>(null);
+	const [result, setResult] = useState<any | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [mapUrl, setMapUrl] = useState<string | null>(null); // NEW
 
 	async function sendImage(imageBase64: string) {
 		setLoading(true);
@@ -21,9 +23,9 @@ export default function Home() {
 
 			if (!res.ok) throw new Error("Request failed");
 
-			const data = await res.json(); // Use res.json() if API returns JSON
+			const data = await res.json();
 			console.log("Server response:", data);
-			setResult(data); // ✅ store actual data in state
+			setResult(data);
 		} catch (err) {
 			console.error(err);
 			setResult("Error: Could not classify image.");
@@ -49,6 +51,34 @@ export default function Home() {
 		setPhoto(dataUrl);
 	};
 
+	// Get user location for map when classification is done
+	useEffect(() => {
+		if (result) {
+			if ("geolocation" in navigator) {
+				navigator.geolocation.getCurrentPosition(
+					(position) => {
+						const lat = position.coords.latitude;
+						const lng = position.coords.longitude;
+						const mapsEmbed = `https://www.google.com/maps?q=trash%20disposal%20site%20near%20${lat},${lng}&z=14&output=embed`;
+						setMapUrl(mapsEmbed);
+					},
+					(error) => {
+						console.error("Error getting location:", error);
+						// Fallback map if location denied/unavailable
+						setMapUrl(
+							"https://www.google.com/maps?q=trash%20disposal%20site%20near%20me&output=embed",
+						);
+					},
+				);
+			} else {
+				console.error("Geolocation not supported in this browser.");
+				setMapUrl(
+					"https://www.google.com/maps?q=trash%20disposal%20site%20near%20me&output=embed",
+				);
+			}
+		}
+	}, [result]);
+
 	return (
 		<main className="flex flex-col items-center p-6 gap-6 min-h-screen bg-black text-white">
 			<h1 className="text-4xl font-[500] text-white drop-shadow-lg self-start max-w-screen mb-[45]">
@@ -57,7 +87,8 @@ export default function Home() {
 
 			{!photo ? (
 				<div className="flex flex-col items-center gap-4">
-					<video
+					{/** biome-ignore lint/a11y/useMediaCaption: <explanation> */}
+<video
 						ref={videoRef}
 						autoPlay
 						className="rounded-lg shadow-lg border border-green-500"
@@ -94,6 +125,7 @@ export default function Home() {
 							onClick={() => {
 								setPhoto(null);
 								setResult(null);
+								setMapUrl(null);
 							}}
 							className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition"
 						>
@@ -113,7 +145,22 @@ export default function Home() {
 						<p>Biodegradable: {result.biodegradable ? "Yes" : "No"}</p>
 						<p>Recyclable: {result.recyclable ? "Yes" : "No"}</p>
 						<p>Tip: {result.tip}</p>
-					</div>{" "}
+					</div>
+				</div>
+			)}
+
+			{/* Map Section */}
+			{mapUrl && (
+				<div className="mt-6 w-full max-w-3xl">
+					<iframe
+						allow="geolocation"
+						src={mapUrl}
+						width="100%"
+						height="400"
+						style={{ border: 0 }}
+						allowFullScreen
+						loading="lazy"
+					></iframe>
 				</div>
 			)}
 
