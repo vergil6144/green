@@ -49,6 +49,9 @@ export default function Home() {
 		ctx.drawImage(videoRef.current, 0, 0);
 		const dataUrl = canvasRef.current.toDataURL("image/png");
 		setPhoto(dataUrl);
+		const stream = videoRef.current.srcObject as MediaStream
+		stream.getTracks().forEach(track => track.stop());
+		videoRef.current.srcObject = null
 	};
 
 	// Get user location for map when classification is done
@@ -81,9 +84,17 @@ export default function Home() {
 
 	return (
 		<main className="flex flex-col items-center p-6 gap-6 min-h-screen bg-black text-white">
-			<h1 className="text-4xl font-[500] text-white drop-shadow-lg self-start max-w-screen mb-[45]">
-				♻️ Go Green
-			</h1>
+			<div className="flex justify-between items-center w-full max-w-4xl mb-6">
+				<h1 className="text-4xl font-[500] text-white drop-shadow-lg">
+					♻️ Go Green
+				</h1>
+				<a
+					href="/social-credit"
+					className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium shadow-lg"
+				>
+					🏆 Social Credit
+				</a>
+			</div>
 
 			{!photo ? (
 				<div className="flex flex-col items-center gap-4">
