@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 interface Action {
   id: string;
@@ -155,19 +156,20 @@ export default function SocialCreditPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center text-gray-300 hover:text-green-400 mb-4 transition-colors duration-200">
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Home
+    <ProtectedRoute>
+      <div className="min-h-screen bg-black text-white p-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <Link href="/" className="inline-flex items-center text-gray-300 hover:text-green-400 mb-4 transition-colors duration-200">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">🏆 Social Credit System</h1>
-          <p className="text-lg text-gray-300">Complete actions and submit proof to earn social credit points</p>
-        </div>
+            <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">🏆 Social Credit System</h1>
+            <p className="text-lg text-gray-300">Complete actions and submit proof to earn social credit points</p>
+          </div>
 
         {/* Score Display */}
         <div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6 mb-8">
@@ -322,5 +324,6 @@ export default function SocialCreditPage() {
         )}
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

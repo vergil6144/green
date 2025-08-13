@@ -3,8 +3,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import Navigation from "@/components/Navigation";
 
 export default function Home() {
+	const { user, signOut, loading: authLoading } = useAuth();
+	const [mounted, setMounted] = useState(false);
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [photo, setPhoto] = useState<string | null>(null);
@@ -54,6 +58,11 @@ export default function Home() {
 		videoRef.current.srcObject = null
 	};
 
+	// All hooks must be called before any conditional returns
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
 	// Get user location for map when classification is done
 	useEffect(() => {
 		if (result) {
@@ -82,18 +91,26 @@ export default function Home() {
 		}
 	}, [result]);
 
+	// Show loading state while auth is initializing or not mounted
+	if (!mounted || authLoading) {
+		return (
+			<main className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
+				<div className="text-center">
+					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+					<p className="text-gray-400">Loading...</p>
+				</div>
+			</main>
+		);
+	}
+
 	return (
 		<main className="flex flex-col items-center p-6 gap-6 min-h-screen bg-black text-white">
-			<div className="flex justify-between items-center w-full max-w-4xl mb-6">
+			<Navigation />
+			<div className="text-center mb-6">
 				<h1 className="text-4xl font-[500] text-white drop-shadow-lg">
 					♻️ Go Green
 				</h1>
-				<a
-					href="/social-credit"
-					className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium shadow-lg"
-				>
-					🏆 Social Credit
-				</a>
+				<p className="text-gray-300 mt-2">Your guide to sustainable living and waste classification</p>
 			</div>
 
 			{!photo ? (
