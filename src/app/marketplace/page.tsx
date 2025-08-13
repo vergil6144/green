@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import y from '../social-credit/page'
 import { getTotalPoints } from '../score';
+import Image from "next/image"
 interface Item {
   id: string;
   name: string;
@@ -22,7 +23,7 @@ export default function MarketplacePage() {
       description: 'Durable stainless steel bottle to reduce plastic waste.',
       price: 50,
       category: 'eco',
-      icon: '💧'
+      icon: 'https://pngimg.com/uploads/sport_bottle/sport_bottle_PNG6.png'
     },
     {
       id: '2',
@@ -30,7 +31,7 @@ export default function MarketplacePage() {
       description: 'Eco-friendly shopping bag for everyday use.',
       price: 30,
       category: 'lifestyle',
-      icon: '🛍️'
+      icon: 'https://png.pngtree.com/png-vector/20230906/ourmid/pngtree-white-tote-bag-mockup-realistic-with-shadow-png-image_10002376.png'
     },
     {
       id: '3',
@@ -38,7 +39,7 @@ export default function MarketplacePage() {
       description: 'Portable solar panel charger for phones and small devices.',
       price: 200,
       category: 'tech',
-      icon: '🔋'
+      icon: 'https://png.pngtree.com/png-vector/20240827/ourmid/pngtree-blue-solar-charger-stand-with-panel-png-image_13643357.png'
     },
     {
       id: '4',
@@ -46,7 +47,7 @@ export default function MarketplacePage() {
       description: 'Weekly delivery of fresh, locally sourced vegetables.',
       price: 100,
       category: 'food',
-      icon: '🥦'
+      icon: 'https://www.freshfruitandvegshop.com/wp-content/uploads/2023/05/fruit_veg_box_product_img.png'
     }
   ]);
 
@@ -121,7 +122,15 @@ export default function MarketplacePage() {
                   className="bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-6 transition-all duration-200 hover:shadow-xl hover:border-gray-600"
                 >
                   <div className="text-center">
-                    <div className="text-4xl mb-3">{item.icon}</div>
+                    {/* <div className="text-4xl mb-3">{item.icon}</div> */}
+                    <Image className='mx-auto mb-5'
+                      src = {item.icon}
+                      alt = {item.id}
+                      width={40}
+                      height={40}
+                      style={{width:'6.5rem',height:'6.5rem'}}
+                      unoptimized
+                    />
                     <h3 className="text-lg font-semibold text-white mb-2">{item.name}</h3>
                     <p className="text-gray-300 text-sm mb-4">{item.description}</p>
                     <div className="flex items-center justify-between mb-4">
