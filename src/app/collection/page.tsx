@@ -1,6 +1,8 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { MapPin, Truck, Clock, CheckCircle, Phone, User, Star, ArrowLeft } from 'lucide-react';
+import Navigation from "@/components/Navigation";
+
 
 const TrashCollectionApp = () => {
   const [currentStep, setCurrentStep] = useState('request'); // request, searching, found, confirmed, completed
@@ -46,7 +48,7 @@ const TrashCollectionApp = () => {
     { value: 'organic', label: 'Organic/Compost', price: 60 },
     { value: 'electronics', label: 'Electronics', price: 275 },
     { value: 'furniture', label: 'Large Items/Furniture', price: 1700 },
-    { value: 'furniture', label: 'Medicinal Waste', price: 1500 }
+    { value: 'medi', label: 'Medicinal Waste', price: 1500 }
 
   ];
 
@@ -91,6 +93,8 @@ const TrashCollectionApp = () => {
   const selectedTrashInfo = trashTypes.find(type => type.value === trashType);
 
   return (
+    <div>
+    <Navigation/>
     <div className="min-h-screen bg-black text-white">
       <div className="p-4">
         <div className="max-w-md mx-auto">
@@ -292,6 +296,7 @@ const TrashCollectionApp = () => {
 
         </div>
       </div>
+    </div>
     </div>
   );
 };
