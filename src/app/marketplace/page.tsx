@@ -5,6 +5,8 @@ import Link from 'next/link';
 import y from '../social-credit/page'
 import { getTotalPoints } from '../score';
 import Image from "next/image"
+import Navigation from "@/components/Navigation";
+
 interface Item {
   id: string;
   name: string;
@@ -69,7 +71,11 @@ export default function MarketplacePage() {
   };
   const points = getTotalPoints()
   return (
+    <div>
+                  <Navigation/>
+
     <div className="min-h-screen bg-black text-white p-4">
+
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -163,6 +169,7 @@ export default function MarketplacePage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

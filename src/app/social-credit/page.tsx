@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import Navigation from "@/components/Navigation";
+
 
 interface Action {
   id: string;
@@ -157,6 +159,8 @@ export default function SocialCreditPage() {
 
   return (
     <ProtectedRoute>
+              <Navigation/>
+
       <div className="min-h-screen bg-black text-white p-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
