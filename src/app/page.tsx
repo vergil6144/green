@@ -55,7 +55,7 @@ export default function Home() {
 		setPhoto(dataUrl);
 		const stream = videoRef.current.srcObject as MediaStream
 		stream.getTracks().forEach(track => track.stop());
-		videoRef.current.srcObject = null
+		videoRef.current.srcObject = null
 	};
 
 	// All hooks must be called before any conditional returns
@@ -94,105 +94,124 @@ export default function Home() {
 	// Show loading state while auth is initializing or not mounted
 	if (!mounted || authLoading) {
 		return (
-			<main className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
-				<div className="text-center">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-					<p className="text-gray-400">Loading...</p>
+			<div className="min-h-screen bg-black text-white p-4">
+				<div className="max-w-6xl mx-auto">
+					<div className="text-center">
+						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+						<p className="text-gray-300">Loading...</p>
+					</div>
 				</div>
-			</main>
+			</div>
 		);
 	}
 
 	return (
-		<main className="flex flex-col items-center p-6 gap-6 min-h-screen bg-black text-white">
+		<div className="min-h-screen bg-black text-white">
 			<Navigation />
-			<div className="text-center mb-6">
-				<h1 className="text-4xl font-[500] text-white drop-shadow-lg">
-					♻️ Go Green
-				</h1>
-				<p className="text-gray-300 mt-2">Your guide to sustainable living and waste classification</p>
+			<div className="p-4">
+				<div className="max-w-6xl mx-auto">
+				{/* Header */}
+				<div className="text-center mb-8">
+					<h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg ml-0 ht">
+						♻️ Go Green
+					</h1>
+					<p className="text-lg text-gray-300">
+						Your guide to sustainable living and waste classification
+					</p>
+				</div>
+
+				{!photo ? (
+					<div className="flex flex-col items-center gap-6">
+						<div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6 mb-8 my-0">
+							{/** biome-ignore lint/a11y/useMediaCaption: <explanation> */}
+							<video
+								ref={videoRef}
+								autoPlay
+								className="rounded-lg shadow-lg border border-gray-700 w-full max-w-md"
+							/>
+						</div>
+						<div className="flex gap-4">
+							<button
+								onClick={startCamera}
+								className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200 shadow-lg"
+							>
+								Start Camera
+							</button>
+							<button
+								onClick={capturePhoto}
+								className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200 shadow-lg"
+							>
+								Capture Photo
+							</button>
+						</div>
+					</div>
+				) : (
+					<div className="flex flex-col items-center gap-6">
+						<div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6">
+							<img
+								src={photo}
+								alt="Captured"
+								className="rounded-lg shadow-lg w-full max-w-md border border-gray-700"
+							/>
+						</div>
+						<div className="flex gap-4">
+							<button
+								onClick={() => sendImage(photo)}
+								className="px-6 py-3  my-[1rem] bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200 shadow-lg disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed"
+								disabled={loading}
+							>
+								{loading ? "Classifying..." : "Classify"}
+							</button>
+							<button
+								onClick={() => {
+									setPhoto(null);
+									setResult(null);
+									setMapUrl(null);
+								}}
+								className="px-6 py-3 my-[1rem] bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors duration-200 shadow-lg"
+							>
+								Retake
+							</button>
+						</div>
+					</div>
+				)}
+
+				{result && (
+					<div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6 mb-8 max-w-md mx-auto">
+						<div className="text-center">
+							<h2 className="text-2xl font-semibold text-green-400 mb-4">
+								Classification Result
+							</h2>
+							<div className="space-y-2 text-gray-300">
+								<p><span className="font-medium text-white">Type:</span> {result.type}</p>
+								<p><span className="font-medium text-white">Biodegradable:</span> {result.biodegradable ? "Yes" : "No"}</p>
+								<p><span className="font-medium text-white">Recyclable:</span> {result.recyclable ? "Yes" : "No"}</p>
+								<p><span className="font-medium text-white">Tip:</span> {result.tip}</p>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{/* Map Section */}
+				{mapUrl && (
+					<div className="bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-6 transition-all duration-200 hover:shadow-xl hover:border-gray-600">
+						<h3 className="text-2xl font-semibold text-white mb-4 text-center">Nearby Disposal Sites</h3>
+						<iframe
+							allow="geolocation"
+							src={mapUrl}
+							width="100%"
+							height="400"
+							style={{ border: 0 }}
+							allowFullScreen
+							loading="lazy"
+							className="rounded-lg"
+						></iframe>
+					</div>
+				)}
+
+				<canvas ref={canvasRef} className="hidden" />
 			</div>
-
-			{!photo ? (
-				<div className="flex flex-col items-center gap-4">
-					{/** biome-ignore lint/a11y/useMediaCaption: <explanation> */}
-<video
-						ref={videoRef}
-						autoPlay
-						className="rounded-lg shadow-lg border border-green-500"
-					/>
-					<button
-						onClick={startCamera}
-						className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500 transition"
-					>
-						Start Camera
-					</button>
-					<button
-						onClick={capturePhoto}
-						className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-500 transition"
-					>
-						Capture Photo
-					</button>
-				</div>
-			) : (
-				<div className="flex flex-col items-center gap-4">
-					<img
-						src={photo}
-						alt="Captured"
-						className="rounded-lg shadow-lg w-64 border border-green-500"
-					/>
-					<div className="flex gap-3">
-						<button
-							onClick={() => sendImage(photo)}
-							className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500 transition"
-							disabled={loading}
-						>
-							{loading ? "Classifying..." : "Classify"}
-						</button>
-						<button
-							onClick={() => {
-								setPhoto(null);
-								setResult(null);
-								setMapUrl(null);
-							}}
-							className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition"
-						>
-							Retake
-						</button>
-					</div>
-				</div>
-			)}
-
-			{result && (
-				<div className="bg-gray-900 border border-green-500 shadow-lg p-4 rounded-lg w-full max-w-md text-center">
-					<h2 className="text-xl font-bold text-green-400">
-						Classification Result
-					</h2>
-					<div>
-						<p>Type: {result.type}</p>
-						<p>Biodegradable: {result.biodegradable ? "Yes" : "No"}</p>
-						<p>Recyclable: {result.recyclable ? "Yes" : "No"}</p>
-						<p>Tip: {result.tip}</p>
-					</div>
-				</div>
-			)}
-
-			{/* Map Section */}
-			{mapUrl && (
-				<div className="mt-6 w-full max-w-3xl">
-					<iframe
-						allow="geolocation"
-						src={mapUrl}
-						width="100%"
-						height="400"
-						style={{ border: 0 }}
-						allowFullScreen
-						loading="lazy"
-					></iframe>
-				</div>
-			)}
-
-			<canvas ref={canvasRef} className="hidden" />
-		</main>
-	);
+		</div>
+	</div>
+	)
 }

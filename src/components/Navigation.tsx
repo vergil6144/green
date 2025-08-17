@@ -17,7 +17,7 @@ export default function Navigation() {
     return (
       <nav className="bg-gray-900 border-b border-green-500 px-6 py-5">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-white hover:text-green-400 transition-colors">
+          <Link href="/" className="text-2xl font-bold text-white hover:text-green-400 transition-colors ht">
             ♻️ Go Green
           </Link>
           <div className="w-32 h-10 bg-gray-700 rounded animate-pulse"></div>
