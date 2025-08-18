@@ -384,3 +384,158 @@ class ActionsDatabase {
 }
 
 export const actionsDB = new ActionsDatabase();
+
+// --- Chat DB ---
+export interface ChatMessageRec {
+  role: 'user' | 'bot';
+  text: string;
+  at: Date;
+}
+
+export interface ChatStateRec {
+  userId: string; // 'anon' if not signed in
+  messages: ChatMessageRec[];
+  updatedAt: Date;
+}
+
+class ChatDatabase {
+  private dbName = 'chatDB';
+  private version = 1;
+  private db: IDBDatabase | null = null;
+
+  async init(): Promise<void> {
+    if (typeof window === 'undefined') throw new Error('IndexedDB is not available on server side');
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, this.version);
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => { this.db = request.result; resolve(); };
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        if (!db.objectStoreNames.contains('conversations')) {
+          db.createObjectStore('conversations', { keyPath: 'userId' });
+        }
+      };
+    });
+  }
+
+  private getDb(): IDBDatabase { if (!this.db) throw new Error('Chat DB not initialized'); return this.db; }
+  async initIfNeeded() { if (!this.db) await this.init(); }
+
+  async get(userId: string): Promise<ChatStateRec> {
+    const db = this.getDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(['conversations'], 'readonly');
+      const store = tx.objectStore('conversations');
+      const req = store.get(userId);
+      req.onsuccess = () => {
+        const def: ChatStateRec = { userId, messages: [], updatedAt: new Date(0) };
+        const res = req.result;
+        if (!res) return resolve(def);
+        resolve({ ...res, updatedAt: new Date(res.updatedAt), messages: (res.messages || []).map((m: any) => ({ ...m, at: new Date(m.at) })) });
+      };
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async set(state: ChatStateRec): Promise<void> {
+    const db = this.getDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(['conversations'], 'readwrite');
+      const store = tx.objectStore('conversations');
+      const req = store.put({ ...state });
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async append(userId: string, msg: ChatMessageRec): Promise<ChatStateRec> {
+    await this.initIfNeeded();
+    const cur = await this.get(userId);
+    const next: ChatStateRec = { userId, messages: [...cur.messages, msg], updatedAt: new Date() };
+    await this.set(next);
+    return next;
+  }
+
+  async clear(userId: string): Promise<void> {
+    const db = this.getDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(['conversations'], 'readwrite');
+      const store = tx.objectStore('conversations');
+      const req = store.put({ userId, messages: [], updatedAt: new Date() } as ChatStateRec);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+}
+
+export const chatDB = new ChatDatabase();
+
+// --- Classification History DB ---
+export interface ClassificationResultRec {
+  id: string;
+  userId: string; // 'anon' if not signed in
+  imageDataUrl: string; // data:image/...;base64,...
+  result: {
+    type?: string;
+    biodegradable?: boolean;
+    recyclable?: boolean;
+    recycle_suggestions?: string;
+    tip?: string;
+    [k: string]: any;
+  };
+  createdAt: Date;
+}
+
+class ClassificationDatabase {
+  private dbName = 'classifyDB';
+  private version = 1;
+  private db: IDBDatabase | null = null;
+
+  async init(): Promise<void> {
+    if (typeof window === 'undefined') throw new Error('IndexedDB is not available on server side');
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, this.version);
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => { this.db = request.result; resolve(); };
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        if (!db.objectStoreNames.contains('classifications')) {
+          const store = db.createObjectStore('classifications', { keyPath: 'id' });
+          store.createIndex('userId', 'userId', { unique: false });
+          store.createIndex('createdAt', 'createdAt', { unique: false });
+        }
+      };
+    });
+  }
+
+  private getDb(): IDBDatabase { if (!this.db) throw new Error('Classification DB not initialized'); return this.db; }
+  async initIfNeeded() { if (!this.db) await this.init(); }
+
+  async add(rec: ClassificationResultRec): Promise<void> {
+    const db = this.getDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(['classifications'], 'readwrite');
+      const store = tx.objectStore('classifications');
+      const req = store.add({ ...rec });
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async listByUser(userId: string, limit = 10): Promise<ClassificationResultRec[]> {
+    const db = this.getDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(['classifications'], 'readonly');
+      const store = tx.objectStore('classifications');
+      const req = store.getAll();
+      req.onsuccess = () => {
+        const all = (req.result || []).map((r: any) => ({ ...r, createdAt: new Date(r.createdAt) })) as ClassificationResultRec[];
+        const filtered = all.filter((r) => r.userId === userId).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        resolve(filtered.slice(0, limit));
+      };
+      req.onerror = () => reject(req.error);
+    });
+  }
+}
+
+export const classifyDB = new ClassificationDatabase();

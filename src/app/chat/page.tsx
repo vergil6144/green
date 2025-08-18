@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
+import { chatDB } from "@/lib/db";
 
 type ChatMessage = { role: "user" | "bot"; text: string };
 
@@ -10,12 +11,36 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [sending, setSending] = useState(false);
-  const listRef = useRef<HTMLDivElement | null>(null);
+  const [convKey, setConvKey] = useState<string | null>(null);
+  const VISIBLE_COUNT = 8;
 
+  // No auto-scroll; we clip older messages and keep layout fixed within viewport
+
+  // Create/read a stable conversation key in localStorage
   useEffect(() => {
-    // Auto-scroll to bottom on new messages
-    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages]);
+    if (typeof window === 'undefined') return;
+    let key = localStorage.getItem('chatConvKey');
+    if (!key) {
+      key = `conv-${crypto.randomUUID()}`;
+      localStorage.setItem('chatConvKey', key);
+    }
+    setConvKey(key);
+  }, []);
+
+  // Load persisted messages from IndexedDB
+  useEffect(() => {
+    const load = async () => {
+      if (!convKey) return;
+      try {
+        await chatDB.initIfNeeded();
+        const state = await chatDB.get(convKey);
+        setMessages(state.messages.map(m => ({ role: m.role, text: m.text })));
+      } catch {
+        // ignore
+      }
+    };
+    load();
+  }, [convKey]);
 
   async function sendMessage() {
     if (!input.trim() || sending) return;
@@ -27,13 +52,31 @@ export default function ChatPage() {
     setInput("");
 
     try {
+      // Persist user message to IndexedDB
+      const key = convKey || (typeof window !== 'undefined' ? (localStorage.getItem('chatConvKey') || '') : '');
+      if (key) {
+        await chatDB.initIfNeeded();
+        await chatDB.append(key, { role: 'user', text: userMessage, at: new Date() });
+      }
+
+      const payload = {
+        message: userMessage,
+        history: [...messages, { role: "user", text: userMessage }],
+      };
+
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        body: userMessage,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-      const replyText = await res.text(); // Expect plain text back
+
+      const replyText = await res.text();
       setMessages((prev) => [...prev, { role: "bot", text: replyText || "" }]);
+
+      // Persist bot message to IndexedDB
+      if (key) {
+        await chatDB.append(key, { role: 'bot', text: replyText || '', at: new Date() });
+      }
     } catch (e) {
       setMessages((prev) => [...prev, { role: "bot", text: "Sorry, something went wrong." }]);
     } finally {
@@ -49,10 +92,10 @@ export default function ChatPage() {
   }
 
   return (
-    <div>
+    <div className="h-[100dvh] bg-black text-white flex flex-col overflow-hidden">
       <Navigation />
-      <div className="min-h-screen bg-black text-white p-4">
-        <div className="max-w-6xl mx-auto">
+      <div className="flex-1 p-4 flex flex-col overflow-hidden">
+        <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col overflow-hidden">
           {/* Header */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex items-center text-gray-300 hover:text-green-400 mb-4 transition-colors duration-200">
@@ -66,14 +109,14 @@ export default function ChatPage() {
           </div>
 
           {/* Chat panel */}
-          <div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-4 md:p-6">
-            <div ref={listRef} className="h-[60vh] overflow-y-auto pr-1 space-y-3">
+          <div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-3 md:p-6 flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 pr-1 space-y-3 overflow-hidden flex flex-col justify-end">
               {messages.length === 0 ? (
                 <div className="text-center text-gray-400 mt-10">Start the conversation by typing below.</div>
               ) : (
-                messages.map((m, i) => (
+                messages.slice(-VISIBLE_COUNT).map((m, i) => (
                   <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] px-4 py-2 rounded-xl text-sm md:text-base border ${m.role === 'user' ? 'bg-blue-900/30 text-blue-200 border-blue-600' : 'bg-green-900/30 text-green-200 border-green-600'}`}>
+                    <div className={`max-w-[85%] md:max-w-[80%] px-4 py-2 rounded-xl text-sm md:text-base border break-words whitespace-pre-wrap ${m.role === 'user' ? 'bg-blue-900/30 text-blue-200 border-blue-600' : 'bg-green-900/30 text-green-200 border-green-600'}`}>
                       {m.text}
                     </div>
                   </div>
@@ -81,21 +124,34 @@ export default function ChatPage() {
               )}
             </div>
 
-            <div className="mt-4 flex gap-2">
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
-                placeholder="Type your message and press Enter..."
-              />
-              <button
-                onClick={sendMessage}
-                disabled={sending || !input.trim()}
-                className="px-5 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {sending ? 'Sending...' : 'Send'}
-              </button>
+            <div className="mt-3 md:mt-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+              <div className="flex gap-2 items-stretch flex-col sm:flex-row">
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200"
+                  placeholder="Type your message..."
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={sendMessage}
+                    disabled={sending || !input.trim()}
+                    className="px-5 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                  >
+                    {sending ? 'Sending…' : 'Send'}
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setMessages([]);
+                      try { if (convKey) { await chatDB.clear(convKey); } } catch {}
+                    }}
+                    className="px-4 py-3 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-lg border border-gray-700 w-full sm:w-auto"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
