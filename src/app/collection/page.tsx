@@ -2,14 +2,26 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Truck, Clock, CheckCircle, Phone, User, Star, ArrowLeft } from 'lucide-react';
 import Navigation from "@/components/Navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { statsDB } from "@/lib/db";
 
 
 const TrashCollectionApp = () => {
   const [currentStep, setCurrentStep] = useState('request'); // request, searching, found, confirmed, completed
+  type Collector = {
+    id: number;
+    name: string;
+    driver: string;
+    rating: number;
+    phone: string;
+    truckNumber: string;
+    estimatedArrival: number;
+  };
+  const { user } = useAuth();
   const [location, setLocation] = useState('');
   const [trashType, setTrashType] = useState('general');
-  const [collectorInfo, setCollectorInfo] = useState(null);
-  const [estimatedTime, setEstimatedTime] = useState(null);
+  const [collectorInfo, setCollectorInfo] = useState<Collector | null>(null);
+  const [estimatedTime, setEstimatedTime] = useState<number | null>(null);
 
   // Mock collectors data
   const mockCollectors = [
@@ -66,20 +78,28 @@ const TrashCollectionApp = () => {
     }, 2000);
   };
 
-  const handleConfirmPickup = () => {
+  const handleConfirmPickup = async () => {
     setCurrentStep('confirmed');
+    try {
+      if (user) {
+        await statsDB.initIfNeeded();
+        await statsDB.incrementTrashCalls(user.id, 1);
+      }
+    } catch (e) {
+      console.error('Failed to update stats', e);
+    }
     
     // Start countdown timer
     const interval = setInterval(() => {
       setEstimatedTime(prev => {
-        if (prev <= 1) {
+        if (prev == null || prev <= 1) {
           clearInterval(interval);
           setCurrentStep('completed');
           return 0;
         }
         return prev - 1;
       });
-    }, 1000); // For demo, using 1 second = 1 minute
+  }, 1000); // For demo, using 1 second = 1 minute
   };
 
   const resetApp = () => {

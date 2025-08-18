@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import y from '../social-credit/page'
 import { getTotalPoints } from '../score';
 import Image from "next/image"
 import Navigation from "@/components/Navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { statsDB } from "@/lib/db";
 
 interface Item {
   id: string;
@@ -17,7 +19,21 @@ interface Item {
 }
 
 export default function MarketplacePage() {
-  const [carbonCredits, setCarbonCredits] = useState(120); // Example balanceacac
+  const { user } = useAuth();
+  const [carbonCredits, setCarbonCredits] = useState(120); // local display; real in stats
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (!user) return;
+        await statsDB.initIfNeeded();
+        const s = await statsDB.get(user.id);
+        setCarbonCredits(s.credits ?? 0);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [user]);
   const [items] = useState<Item[]>([
     {
       id: '1',
@@ -63,10 +79,21 @@ export default function MarketplacePage() {
     return colors[category];
   };
 
-  const handleBuy = (item: Item) => {
-    if (carbonCredits >= item.price) {
+  const handleBuy = async (item: Item) => {
+    if (!user) {
+      alert('Please sign in to purchase');
+      return;
+    }
+    if (carbonCredits < item.price) return;
+    try {
+      await statsDB.initIfNeeded();
+      await statsDB.addPurchase(user.id, { id: item.id, name: item.name, price: item.price });
+      await statsDB.addCredits(user.id, -item.price);
       setCarbonCredits((prev) => prev - item.price);
       alert(`You purchased: ${item.name}`);
+    } catch (e) {
+      console.error(e);
+      alert('Failed to record purchase');
     }
   };
   const points = getTotalPoints()

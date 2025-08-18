@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Navigation from "@/components/Navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { submissionsDB, actionsDB } from "@/lib/db";
 
 
 interface Action {
@@ -28,62 +30,30 @@ interface Submission {
 }
 
 export default function SocialCreditPage() {
-  const [actions] = useState<Action[]>([
-    {
-      id: '1',
-      title: 'Pick up trash',
-      description: 'Collect and properly dispose of litter in your community',
-      points: 25,
-      category: 'environmental',
-      icon: '🗑️',
-      proofRequired: true
-    },
-    {
-      id: '2',
-      title: 'Plant a tree',
-      description: 'Plant and care for a new tree in your area',
-      points: 100,
-      category: 'environmental',
-      icon: '🌳',
-      proofRequired: true
-    },
-    {
-      id: '3',
-      title: 'Volunteer at community event',
-      description: 'Participate in local community service activities',
-      points: 75,
-      category: 'social',
-      icon: '🤝',
-      proofRequired: true
-    },
-    {
-      id: '4',
-      title: 'Use public transportation',
-      description: 'Take bus, train, or bike instead of driving',
-      points: 15,
-      category: 'environmental',
-      icon: '🚌',
-      proofRequired: true
-    },
-    {
-      id: '5',
-      title: 'Support local business',
-      description: 'Purchase from small, local shops and restaurants',
-      points: 20,
-      category: 'economic',
-      icon: '🏪',
-      proofRequired: true
-    },
-    {
-      id: '6',
-      title: 'Reduce energy usage',
-      description: 'Turn off lights and unplug devices when not in use',
-      points: 10,
-      category: 'environmental',
-      icon: '💡',
-      proofRequired: true
-    }
-  ]);
+  const { user } = useAuth();
+  const [actions, setActions] = useState<Action[]>([]);
+  useEffect(() => {
+    (async () => {
+      try {
+        await actionsDB.initIfNeeded();
+        const fromDb = await actionsDB.listAll();
+        if (fromDb.length > 0) {
+          setActions(fromDb as unknown as Action[]);
+        } else {
+          setActions([
+            { id: '1', title: 'Pick up trash', description: 'Collect and properly dispose of litter in your community', points: 25, category: 'environmental', icon: '🗑️', proofRequired: true },
+            { id: '2', title: 'Plant a tree', description: 'Plant and care for a new tree in your area', points: 100, category: 'environmental', icon: '🌳', proofRequired: true },
+            { id: '3', title: 'Volunteer at community event', description: 'Participate in local community service activities', points: 75, category: 'social', icon: '🤝', proofRequired: true },
+            { id: '4', title: 'Use public transportation', description: 'Take bus, train, or bike instead of driving', points: 15, category: 'environmental', icon: '🚌', proofRequired: true },
+            { id: '5', title: 'Support local business', description: 'Purchase from small, local shops and restaurants', points: 20, category: 'economic', icon: '🏪', proofRequired: true },
+            { id: '6', title: 'Reduce energy usage', description: 'Turn off lights and unplug devices when not in use', points: 10, category: 'environmental', icon: '💡', proofRequired: true },
+          ]);
+        }
+      } catch (e) {
+        console.error('Failed to load actions', e);
+      }
+    })();
+  }, []);
 
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [selectedAction, setSelectedAction] = useState<Action | null>(null);
@@ -145,6 +115,19 @@ export default function SocialCreditPage() {
     };
     
     setSubmissions([newSubmission, ...submissions]);
+
+    // Persist to Submissions DB for admin review
+    try {
+      if (user) {
+        await submissionsDB.initIfNeeded();
+        await submissionsDB.add({
+          ...newSubmission,
+          userId: user.id,
+        } as any);
+      }
+    } catch (e) {
+      console.error('Failed to save submission', e);
+    }
     setSelectedAction(null);
     setProofImage(null);
     setDescription('');
