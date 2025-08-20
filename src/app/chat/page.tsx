@@ -92,10 +92,10 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="h-[100dvh] bg-black text-white flex flex-col overflow-hidden">
+  <div className="h-[100dvh] bg-black text-white flex flex-col">
       <Navigation />
-      <div className="flex-1 p-4 flex flex-col overflow-hidden">
-        <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col overflow-hidden">
+  <div className="flex-1 p-4 flex flex-col">
+  <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col">
           {/* Header */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex items-center text-gray-300 hover:text-green-400 mb-4 transition-colors duration-200">
@@ -109,8 +109,8 @@ export default function ChatPage() {
           </div>
 
           {/* Chat panel */}
-          <div className="glass-card border border-green-500/30 rounded-2xl shadow-lg p-3 md:p-6 flex-1 flex flex-col overflow-hidden">
-            <div className="flex-1 pr-1 space-y-3 overflow-hidden flex flex-col justify-end">
+          <div className="glass-card border border-green-500/30 rounded-2xl shadow-lg p-3 md:p-6 flex-1 flex flex-col">
+            <div className="flex-1 pr-1 space-y-3 flex flex-col justify-end">
               {messages.length === 0 ? (
                 <div className="text-center text-gray-400 mt-10">Start the conversation by typing below.</div>
               ) : (
