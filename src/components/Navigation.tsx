@@ -39,7 +39,8 @@ export default function Navigation() {
     { href: '/collection', label: 'Collection' },
     { href: '/marketplace', label: 'Marketplace' },
     { href: '/social-credit', label: 'Social Credit' },
-    { href: '/admin', label: 'Admin' },
+    // { href: '/admin', label: 'Admin' },
+    { href: '/calendar', label: 'Calendar' },
     { href: '/user', label: 'User' },
     // Only show Auth when no user is logged in
     ...(!user ? [{ href: '/auth', label: 'Auth' as const }] : []),
@@ -78,7 +79,7 @@ export default function Navigation() {
               href="/auth"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
             >
-              🔐 Sign In
+              Sign In
             </Link>
           )}
         </div>
@@ -132,7 +133,7 @@ export default function Navigation() {
                 className="w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
                 onClick={() => setMobileOpen(false)}
               >
-                🔐 Sign In
+                Sign In
               </Link>
             </div>
           )}
