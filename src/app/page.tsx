@@ -111,7 +111,7 @@ export default function Home() {
 			<div className="p-4">
 				<div className="max-w-6xl mx-auto">
 				{/* Header */}
-				<div className="text-center mb-8">
+				<div className="text-center mb-8 pt-8 md:pt-12">
 					<h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg ml-0 ht">
 						♻️ Go Green
 					</h1>
@@ -122,7 +122,7 @@ export default function Home() {
 
 				{!photo ? (
 					<div className="flex flex-col items-center gap-6">
-						<div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6 mb-8 my-0">
+						<div className="glass-card border border-green-500 p-6 mb-8 my-0">
 							{/** biome-ignore lint/a11y/useMediaCaption: <explanation> */}
 							<video
 								ref={videoRef}
@@ -177,7 +177,7 @@ export default function Home() {
 				)}
 
 				{result && (
-					<div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6 mb-8 max-w-md mx-auto">
+					<div className="glass-card border border-green-500 p-6 mb-8 max-w-md mx-auto">
 						<div className="text-center">
 							<h2 className="text-2xl font-semibold text-green-400 mb-4">
 								Classification Result

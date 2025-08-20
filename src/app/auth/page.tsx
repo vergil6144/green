@@ -509,7 +509,7 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-transparent flex items-center justify-center p-6">
-      <div className="bg-gray-900 p-8 rounded-lg shadow-xl border border-green-500 w-full max-w-md">
+      <div className="glass-card p-8 w-full max-w-md border border-green-500/30">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
             ♻️ Go Green

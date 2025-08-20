@@ -134,7 +134,7 @@ export default function MarketplacePage() {
         </div>
 
         {/* Credit Balance */}
-        <div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6 mb-8">
+        <div className="glass-card border border-green-500 p-6 mb-8">
           <div className="text-center">
             <div className="text-6xl font-bold text-green-400 mb-2 drop-shadow-lg">
               {points}
@@ -152,7 +152,7 @@ export default function MarketplacePage() {
               return (
                 <div
                   key={item.id}
-                  className="bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-6 transition-all duration-200 hover:shadow-xl hover:border-gray-600"
+                  className="glass-card border border-gray-700 p-6 transition-all duration-200 cursor-pointer"
                 >
                   <div className="text-center">
                     {/* <div className="text-4xl mb-3">{item.icon}</div> */}

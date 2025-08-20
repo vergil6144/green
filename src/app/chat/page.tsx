@@ -109,7 +109,7 @@ export default function ChatPage() {
           </div>
 
           {/* Chat panel */}
-          <div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-3 md:p-6 flex-1 flex flex-col overflow-hidden">
+          <div className="glass-card border border-green-500/30 rounded-2xl shadow-lg p-3 md:p-6 flex-1 flex flex-col overflow-hidden">
             <div className="flex-1 pr-1 space-y-3 overflow-hidden flex flex-col justify-end">
               {messages.length === 0 ? (
                 <div className="text-center text-gray-400 mt-10">Start the conversation by typing below.</div>

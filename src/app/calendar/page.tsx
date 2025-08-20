@@ -99,9 +99,9 @@ export default function CalendarPage() {
                   {monthName}
                 </h3>
                 <div className="grid grid-cols-7 text-xs text-center relative">
-                  {["S", "M", "T", "W", "T", "F", "S"].map((d) => (
+                  {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
                     <div
-                      key={d}
+                      key={`${d}-${i}`}
                       className="text-green-400 font-medium border-b border-gray-700 pb-1"
                     >
                       {d}

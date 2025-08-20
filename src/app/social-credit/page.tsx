@@ -159,7 +159,7 @@ export default function SocialCreditPage() {
           </div>
 
         {/* Score Display */}
-        <div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6 mb-8">
+        <div className="glass-card border border-green-500 p-6 mb-8">
           <div className="text-center">
             <div className="text-6xl font-bold text-green-400 mb-2 drop-shadow-lg">{totalPoints}</div>
             <div className="text-lg text-gray-300">Total Points Earned</div>
