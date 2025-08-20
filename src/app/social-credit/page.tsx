@@ -154,7 +154,7 @@ export default function SocialCreditPage() {
               </svg>
               Back to Home
           </Link>
-            <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">🏆 Social Credit System</h1>
+            <h1 className="text-4xl font-bold text-green-400 mb-2 drop-shadow-lg ml-0 ht"> Social Credit System</h1>
             <p className="text-lg text-gray-300">Complete actions and submit proof to earn social credit points</p>
           </div>
 
@@ -176,11 +176,10 @@ export default function SocialCreditPage() {
             {actions.map((action) => (
               <div
                 key={action.id}
-                className="bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-6 transition-all duration-200 hover:shadow-xl hover:border-gray-600 cursor-pointer"
+                className="glass-card border border-green-500/30 rounded-2xl shadow-lg p-6 transition-all duration-200 hover:shadow-xl cursor-pointer"
                 onClick={() => openSubmissionModal(action)}
               >
                 <div className="text-center">
-                  <div className="text-4xl mb-3">{action.icon}</div>
                   <h3 className="text-lg font-semibold text-white mb-2">{action.title}</h3>
                   <p className="text-gray-300 text-sm mb-4">{action.description}</p>
                   <div className="flex items-center justify-between">
@@ -192,7 +191,7 @@ export default function SocialCreditPage() {
                     </span>
                   </div>
                   <div className="mt-3 text-xs text-yellow-400">
-                    📸 Proof required
+                    Proof required
                   </div>
                 </div>
               </div>
@@ -220,7 +219,7 @@ export default function SocialCreditPage() {
                             className="w-full h-full object-cover rounded-lg"
                           />
                         ) : (
-                          <span className="text-2xl">📷</span>
+                          <span className="text-sm text-gray-400">No proof uploaded</span>
                         )}
                       </div>
                       <div>
@@ -259,7 +258,6 @@ export default function SocialCreditPage() {
               </div>
               
               <div className="text-center mb-4">
-                <div className="text-4xl mb-2">{selectedAction.icon}</div>
                 <h3 className="text-lg font-semibold text-white">{selectedAction.title}</h3>
                 <p className="text-gray-300 text-sm">{selectedAction.description}</p>
                 <div className="text-green-400 font-bold mt-2">+{selectedAction.points} points</div>

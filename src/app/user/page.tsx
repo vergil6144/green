@@ -30,25 +30,27 @@ export default function UserPage() {
       <Navigation />
   <div className="min-h-screen bg-transparent text-white p-6">
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-3xl font-bold mb-6">Your Stats</h1>
+          <div className="pt-8 md:pt-12">
+          <h1 className="text-4xl font-bold text-green-400 mb-2 drop-shadow-lg ml-0 ht">Your Stats</h1>
+          </div>
           {loading || !stats ? (
             <div className="text-gray-400">Loading stats...</div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6">
+              <div className="glass-card border border-green-500 p-6">
                 <div className="text-sm text-gray-400">Tasks Completed</div>
                 <div className="text-4xl font-bold text-green-400">{stats.tasksCompleted}</div>
               </div>
-              <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6">
+              <div className="glass-card border border-green-500 p-6">
                 <div className="text-sm text-gray-400">Credits</div>
                 <div className="text-4xl font-bold text-green-400">{stats.credits}</div>
               </div>
-              <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6">
+              <div className="glass-card border border-green-500 p-6">
                 <div className="text-sm text-gray-400">Trash Pickups Requested</div>
                 <div className="text-4xl font-bold text-green-400">{stats.trashCalls}</div>
               </div>
 
-              <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 lg:col-span-3">
+              <div className="glass-card border border-green-500 p-6 lg:col-span-3">
                 <h2 className="text-xl font-semibold mb-4">Purchases</h2>
                 {stats.purchases.length === 0 ? (
                   <div className="text-gray-400">No purchases yet</div>
