@@ -60,7 +60,7 @@ export default function Navigation() {
               <Link
                 key={r.href}
                 href={r.href}
-                className="px-3 py-2 rounded-md text-gray-200 hover:bg-gray-800 hover:text-white transition-colors"
+                className="nav-link px-3 py-2 rounded-md text-gray-200 hover:bg-gray-800 hover:text-white transition-colors"
               >
                 {r.label}
               </Link>
@@ -70,14 +70,14 @@ export default function Navigation() {
           {user ? (
             <button
               onClick={signOut}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium"
+              className="btn px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium"
             >
               Sign Out
             </button>
           ) : (
             <Link
               href="/auth"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+              className="btn px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
             >
               Sign In
             </Link>
@@ -121,7 +121,7 @@ export default function Navigation() {
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => { setMobileOpen(false); signOut(); }}
-                className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium"
+                className="btn w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium"
               >
                 Sign Out
               </button>
@@ -130,7 +130,7 @@ export default function Navigation() {
             <div className="flex flex-col gap-3">
               <Link
                 href="/auth"
-                className="w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                className="btn w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
                 onClick={() => setMobileOpen(false)}
               >
                 Sign In

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -39,7 +40,6 @@ export default function AuthPage() {
   });
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [loading, setLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
   
   const { signUp, signIn } = useAuth();
   const router = useRouter();
@@ -142,7 +142,7 @@ export default function AuthPage() {
       setCurrentStep(3);
       setErrors({});
       // Simulate sending OTP
-      setOtpSent(true);
+  // otp simulated
     }
   };
 
@@ -206,7 +206,7 @@ export default function AuthPage() {
     });
     setSignInData({ email: '', password: '' });
     setErrors({});
-    setOtpSent(false);
+  // reset otp state
   };
 
   const toggleMode = () => {
@@ -508,7 +508,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-6">
+    <div className="min-h-screen bg-transparent flex items-center justify-center p-6">
       <div className="bg-gray-900 p-8 rounded-lg shadow-xl border border-green-500 w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
@@ -530,18 +530,13 @@ export default function AuthPage() {
           >
             {mode === 'signup' 
               ? 'Already have an account? Sign In' 
-              : "Don't have an account? Sign Up"
+              : 'Don\'t have an account? Sign Up'
             }
           </button>
         </div>
 
         <div className="mt-8 pt-6 border-t border-gray-700 text-center">
-          <a
-            href="/"
-            className="text-gray-400 hover:text-white transition-colors duration-200"
-          >
-            ← Back to Home
-          </a>
+          <Link href="/" className="text-gray-400 hover:text-white transition-colors duration-200">← Back to Home</Link>
         </div>
       </div>
     </div>

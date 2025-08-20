@@ -144,7 +144,7 @@ export default function SocialCreditPage() {
     <ProtectedRoute>
               <Navigation/>
 
-      <div className="min-h-screen bg-black text-white p-4">
+  <div className="min-h-screen bg-transparent text-white p-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">

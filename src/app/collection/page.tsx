@@ -113,9 +113,9 @@ const TrashCollectionApp = () => {
   const selectedTrashInfo = trashTypes.find(type => type.value === trashType);
 
   return (
-    <div>
-    <Navigation/>
-    <div className="min-h-screen bg-black text-white">
+  <div>
+  <Navigation/>
+  <div className="min-h-screen bg-transparent text-white">
       <div className="p-4">
         <div className="max-w-md mx-auto">
           

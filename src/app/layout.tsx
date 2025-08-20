@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import AnimatedBG from '@/components/AnimatedBG';
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -25,11 +26,12 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className="m-0 p-0 bg-black">
-				<AuthProvider>
-					{children}
-				</AuthProvider>
-			</body>
+					<body className="m-0 p-0 bg-transparent">
+						<AnimatedBG />
+						<AuthProvider>
+							{children}
+						</AuthProvider>
+					</body>
 		</html>
 	);
 }

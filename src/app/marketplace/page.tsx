@@ -101,7 +101,7 @@ export default function MarketplacePage() {
     <div>
                   <Navigation/>
 
-    <div className="min-h-screen bg-black text-white p-4">
+  <div className="min-h-screen bg-transparent text-white p-4">
 
       <div className="max-w-6xl mx-auto">
         {/* Header */}

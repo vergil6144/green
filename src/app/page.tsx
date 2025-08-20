@@ -94,7 +94,7 @@ export default function Home() {
 	// Show loading state while auth is initializing or not mounted
 	if (!mounted || authLoading) {
 		return (
-			<div className="min-h-screen bg-black text-white p-4">
+			<div className="min-h-screen bg-transparent text-white p-4">
 				<div className="max-w-6xl mx-auto">
 					<div className="text-center">
 						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
@@ -106,7 +106,7 @@ export default function Home() {
 	}
 
 	return (
-		<div className="min-h-screen bg-black text-white">
+		<div className="min-h-screen bg-transparent text-white">
 			<Navigation />
 			<div className="p-4">
 				<div className="max-w-6xl mx-auto">

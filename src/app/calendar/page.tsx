@@ -51,7 +51,7 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-transparent text-white">
       <Navigation />
 
       <div className="p-4 max-w-7xl mx-auto">
