@@ -112,8 +112,8 @@ export default function Home() {
 				<div className="max-w-6xl mx-auto">
 				{/* Header */}
 				<div className="text-center mb-8 pt-8 md:pt-12">
-					<h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg ml-0 ht">
-						♻️ Go Green
+					<h1 className="text-4xl font-bold text-green-400 mb-2 drop-shadow-lg ml-0 ht">
+						Go Green
 					</h1>
 					<p className="text-lg text-gray-300">
 						Your guide to sustainable living and waste classification

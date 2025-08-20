@@ -113,17 +113,17 @@ const TrashCollectionApp = () => {
   const selectedTrashInfo = trashTypes.find(type => type.value === trashType);
 
   return (
-  <div>
-  <Navigation/>
-  <div className="min-h-screen bg-transparent text-white">
+    <div>
+    <Navigation/>
+    <div className="min-h-screen bg-black text-white">
       <div className="p-4">
         <div className="max-w-md mx-auto">
           
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg flex items-center justify-center gap-2">
+          <div className="text-center mb-8 pt-8 md:pt-12">
+            <h1 className="text-4xl font-bold text-green-400 mb-2 drop-shadow-lg flex items-center justify-center gap-2">
               <Truck size={40} />
-              🗑️ TrashPickup
+              TrashPickup
             </h1>
             <p className="text-lg text-gray-300">
               On-demand waste collection service

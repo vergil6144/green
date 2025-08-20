@@ -55,10 +55,10 @@ export default function CalendarPage() {
       <Navigation />
 
       <div className="p-4 max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
-            📅 Community Cleanup Calendar
+  {/* Header */}
+  <div className="text-center mb-8 pt-8 md:pt-12">
+          <h1 className="text-4xl font-bold text-green-400 mb-2 drop-shadow-lg ml-0 ht">
+            Community Cleanup Calendar
           </h1>
           <p className="text-lg text-gray-300">
             Explore upcoming cleanups across the year

@@ -511,8 +511,8 @@ export default function AuthPage() {
     <div className="min-h-screen bg-transparent flex items-center justify-center p-6">
       <div className="glass-card p-8 w-full max-w-md border border-green-500/30">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            ♻️ Go Green
+          <h1 className="text-4xl font-bold text-green-400 mb-2 drop-shadow-lg ml-0 ht">
+            Go Green
           </h1>
           <p className="text-gray-400">
             {mode === 'signup' ? 'Create your account' : 'Welcome back'}

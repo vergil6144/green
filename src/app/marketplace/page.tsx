@@ -125,8 +125,8 @@ export default function MarketplacePage() {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
-            🛒 Marketplace
+          <h1 className="text-4xl font-bold text-green-400 mb-2 drop-shadow-lg ml-0 ht">
+            Marketplace
           </h1>
           <p className="text-lg text-gray-300">
             Spend your carbon credits on eco-friendly products and services
