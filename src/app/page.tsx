@@ -147,7 +147,7 @@ export default function Home() {
 					</div>
 				) : (
 					<div className="flex flex-col items-center gap-6">
-						<div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6">
+						<div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6 glass-card border border-green-500 p-6 mb-8">
 							<img
 								src={photo}
 								alt="Captured"
@@ -194,7 +194,7 @@ export default function Home() {
 
 				{/* Map Section */}
 				{mapUrl && (
-					<div className="bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-6 transition-all duration-200 hover:shadow-xl hover:border-gray-600">
+					<div className="bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-6 transition-all duration-200 hover:shadow-xl hover:border-gray-600 glass-card border border-green-500 p-6 mb-8">
 						<h3 className="text-2xl font-semibold text-white mb-4 text-center">Nearby Disposal Sites</h3>
 						<iframe
 							allow="geolocation"
@@ -212,6 +212,37 @@ export default function Home() {
 				<canvas ref={canvasRef} className="hidden" />
 			</div>
 		</div>
+		<div className="bg-gray-900 border border-green-500 rounded-2xl shadow-lg p-6 glass-card mb-8 max-w-6xl mx-auto mt-[2rem]">
+  <h3 className="text-2xl font-semibold text-green-400 mb-6 text-center">
+    Our Partners
+  </h3>
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 items-center justify-items-center">
+    {/* Amnesty International */}
+    <img
+      src="https://upload.wikimedia.org/wikipedia/en/thumb/e/ee/Amnesty_International_logo.svg/1200px-Amnesty_International_logo.svg.png"
+      alt="Amnesty International"
+      className="h-12 w-auto object-contain grayscale hover:grayscale-0 transition duration-200"
+    />
+    {/* Greenpeace */}
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Greenpeace_logo.svg/2560px-Greenpeace_logo.svg.png"
+      alt="Greenpeace"
+      className="h-12 w-auto object-contain grayscale hover:grayscale-0 transition duration-200"
+    />
+    {/* Red Cross */}
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Red_Cross_icon.svg"
+      alt="Red Cross"
+      className="h-[10rem] w-auto object-contain grayscale hover:grayscale-0 transition duration-200"
+    />
+    {/* WWF */}
+    <img
+      src="https://upload.wikimedia.org/wikipedia/en/thumb/2/24/WWF_logo.svg/800px-WWF_logo.svg.png"
+      alt="WWF"
+      className="h-[10rem] w-auto object-contain grayscale hover:grayscale-0 transition duration-200"
+    />
+  </div>
+</div>
 	</div>
 	)
 }

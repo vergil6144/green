@@ -92,7 +92,7 @@ export default function ChatPage() {
   }
 
   return (
-  <div className="h-[100dvh] bg-black text-white flex flex-col">
+  <div className="h-[100dvh]  text-white flex flex-col">
       <Navigation />
   <div className="flex-1 p-4 flex flex-col">
   <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col">

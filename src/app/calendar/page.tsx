@@ -93,7 +93,7 @@ export default function CalendarPage() {
             return (
               <div
                 key={m}
-                className="bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-4 hover:shadow-xl transition-all duration-200"
+                className="bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-4 hover:shadow-xl transition-all duration-200 glass-card border border-green-500 p-6 mb-8"
               >
                 <h3 className="text-xl font-semibold text-white mb-4 text-center">
                   {monthName}
