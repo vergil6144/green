@@ -172,7 +172,13 @@ class StatsDatabase {
           purchases: [],
           trashCalls: 0,
         };
-        resolve(req.result ? { ...req.result, purchases: (req.result.purchases || []).map((p: any) => ({ ...p, purchasedAt: new Date(p.purchasedAt) })) } : def);
+        if (req.result) {
+          const raw = req.result as { purchases?: StoredPurchase[] };
+          const purchases = (raw.purchases || []).map((p) => ({ ...p, purchasedAt: new Date(p.purchasedAt) }));
+          resolve({ ...req.result, purchases } as UserStats);
+        } else {
+          resolve(def);
+        }
       };
       req.onerror = () => reject(req.error);
     });
@@ -284,7 +290,10 @@ class SubmissionsDatabase {
       const tx = db.transaction(['submissions'], 'readonly');
       const store = tx.objectStore('submissions');
       const req = store.getAll();
-      req.onsuccess = () => resolve((req.result || []).map((r: any) => ({ ...r, submittedAt: new Date(r.submittedAt) })));
+      req.onsuccess = () => {
+        const rows = (req.result || []) as StoredSubmission[];
+        resolve(rows.map((r) => ({ ...r, submittedAt: new Date(r.submittedAt) })));
+      };
       req.onerror = () => reject(req.error);
     });
   }
@@ -428,10 +437,12 @@ class ChatDatabase {
       const store = tx.objectStore('conversations');
       const req = store.get(userId);
       req.onsuccess = () => {
-        const def: ChatStateRec = { userId, messages: [], updatedAt: new Date(0) };
-        const res = req.result;
-        if (!res) return resolve(def);
-        resolve({ ...res, updatedAt: new Date(res.updatedAt), messages: (res.messages || []).map((m: any) => ({ ...m, at: new Date(m.at) })) });
+  const def: ChatStateRec = { userId, messages: [], updatedAt: new Date(0) };
+  const res = req.result as { messages?: StoredChatMessage[]; updatedAt?: string | number | Date } | undefined;
+  if (!res) return resolve(def);
+  const messages = (res.messages || []).map((m) => ({ ...m, at: new Date(m.at) }));
+  const updatedAtValue = res.updatedAt ?? 0;
+  resolve({ ...res, updatedAt: new Date(updatedAtValue), messages } as ChatStateRec);
       };
       req.onerror = () => reject(req.error);
     });
@@ -481,9 +492,43 @@ export interface ClassificationResultRec {
     recyclable?: boolean;
     recycle_suggestions?: string;
     tip?: string;
-    [k: string]: any;
+    [k: string]: unknown;
   };
   createdAt: Date;
+}
+
+// Stored shapes coming from IndexedDB (dates are stored as strings)
+interface StoredPurchase {
+  id: string;
+  name: string;
+  price: number;
+  purchasedAt: string | number | Date;
+}
+
+interface StoredChatMessage {
+  role: 'user' | 'bot';
+  text: string;
+  at: string | number | Date;
+}
+
+interface StoredSubmission {
+  id: string;
+  userId: string;
+  actionId: string;
+  actionTitle: string;
+  proofImage: string;
+  description: string;
+  status: 'pending' | 'approved' | 'rejected';
+  submittedAt: string | number | Date;
+  points: number;
+}
+
+interface StoredClassification {
+  id: string;
+  userId: string;
+  imageDataUrl: string;
+  result: Record<string, unknown>;
+  createdAt: string | number | Date;
 }
 
 class ClassificationDatabase {
@@ -529,9 +574,10 @@ class ClassificationDatabase {
       const store = tx.objectStore('classifications');
       const req = store.getAll();
       req.onsuccess = () => {
-        const all = (req.result || []).map((r: any) => ({ ...r, createdAt: new Date(r.createdAt) })) as ClassificationResultRec[];
-        const filtered = all.filter((r) => r.userId === userId).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-        resolve(filtered.slice(0, limit));
+  const all = (req.result || []) as StoredClassification[];
+  const parsed = all.map((r) => ({ ...r, createdAt: new Date(r.createdAt) })) as ClassificationResultRec[];
+  const filtered = parsed.filter((r) => r.userId === userId).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  resolve(filtered.slice(0, limit));
       };
       req.onerror = () => reject(req.error);
     });
